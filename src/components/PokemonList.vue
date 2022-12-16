@@ -1,9 +1,68 @@
+<!--
+CARON Samuel 2019-10-29 15:49:52
+PokemonList.vue
+-->
 <template>
-  <div class="list"></div>
+  <div class="list">
+    <article v-for="pokemon in filteredPokemons" v-bind:key="pokemon.name" v-on:click="showPokemonDetail(pokemon)">
+      <img :src="pokemon.image" alt="">
+      <h3>{{ pokemon.name }}</h3>
+    </article>
+  </div>
 </template>
 
 <script>
-export default {};
+import axios from '../../node_modules/axios'
+import API from '../config/config.json'
+
+export default {
+  // Name
+  name : 'PokemonList',
+
+  // Props
+  props: ['pokemonSearch'],
+
+  beforeMount(){
+    // appel de l'api pour récuperer la liste des characters
+    axios.get(API["API_URL"] + "/pokemon")
+      .then((e)=>{
+        // sur le retour on stock la data dans caracters
+        this.pokemons = e.data.results;
+        
+        // Permet de récupérer les images des pokemons selon leur nom
+        for (let i = 0; i < this.pokemons.length; i++) {
+          const elt = this.pokemons[i];
+          elt.image = API["IMG_URL"] + elt.name + ".png"
+        }
+      })
+  },
+
+  // Data
+  data: function () {
+    return {
+      // datastore
+      pokemons: [],
+    };
+  },
+
+  // Method
+  methods: {
+    // Show pokemon detail
+    showPokemonDetail : function(pokemon){
+      this.$emit('showPokemonDetailEmit', pokemon);
+    }
+  },
+
+  // Computed
+  computed: {
+    // Filter pokemons
+    filteredPokemons: function () {
+      return this.pokemons.filter((pokemon) => {
+        return pokemon.name.match(this.pokemonSearch)
+      })
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>

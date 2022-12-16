@@ -1,9 +1,32 @@
+<!--
+CARON Samuel 2019-10-29 15:49:52
+PokemonSearch.vue
+-->
 <template>
-  <div class="searchbar"></div>
+  <div class="searchbar">
+    <input type="text" placeholder="Search..." v-model="search">
+  </div>
 </template>
 
 <script>
-export default {};
+export default {
+  // Name
+  name: "PokemonSearch",
+
+  // Data
+  data: function () {
+    return {
+      search : "",
+    }
+  },
+
+  watch: {
+    // Watch search
+    search: function () {
+      this.$emit('searchPokemonEmit', this.search);
+    }
+  }
+};
 </script>
 
 <style scoped>
